@@ -1,5 +1,7 @@
 "use client";
 
+import GroupCard from "@/components/GroupCard";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Group {
@@ -9,6 +11,8 @@ interface Group {
 }
 
 const Dashboard = () => {
+  const router = useRouter();
+
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -33,11 +37,19 @@ const Dashboard = () => {
     fetchGroups();
   }, []);
 
-  return (
-    <div>
-      <div>
-        {groups.map((group, i) => (
-          <div key={i}>{group.name}</div>
+  return isLoading ? (
+    <div className="flex items-center justify-center h-screen">
+      <span className="loader"></span>
+    </div>
+  ) : (
+    <div className="flex justify-center flex-col items-center">
+      <h1 className="text-amber-50 text-2xl mt-10 md:mt-20 ">Your Groups</h1>
+      <div className="flex-col flex gap-10 w-[90%] md:w-[500px] mt-10">
+        {groups.map((group) => (
+          <GroupCard
+            onClick={() => router.push(`/groups/${group.id}`)}
+            group={group}
+          />
         ))}
       </div>
     </div>
