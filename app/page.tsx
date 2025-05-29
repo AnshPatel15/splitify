@@ -1,11 +1,16 @@
+"use client";
+
 import { currentUser } from "@clerk/nextjs/server";
-import Navbar from "../components/Navbar";
 import Hero from "@/components/Hero";
+import { useEffect } from "react";
 
-export default async function Home() {
-  const user = await currentUser();
-
-  const safeUser = user ? { firstName: user.firstName } : null;
+export default function Home() {
+  useEffect(() => {
+    fetch("/api/users/sync", { method: "POST" })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.error(err.message));
+  }, []);
 
   return (
     <div>

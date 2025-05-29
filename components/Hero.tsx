@@ -24,7 +24,11 @@ const Hero = () => {
         </span>
       </div>
       <div className="flex justify-center gap-8">
-        <Button variant="outline" className="text-black cursor-pointer">
+        <Button
+          onClick={() => router.push("/groups/create-group")}
+          variant="outline"
+          className="text-black cursor-pointer"
+        >
           Create Group
         </Button>
         <Button
