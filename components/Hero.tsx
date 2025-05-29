@@ -6,7 +6,7 @@ const Hero = () => {
     <div className="text-white">
       <div className="flex justify-center flex-col items-center p-15">
         <Image
-          className="h-70 rounded-3xl ml-25"
+          className="h-50 ml-15 sm:h-70 rounded-3xl sm:ml-25"
           src="/hero.png"
           alt="hero"
           width={400}
@@ -19,10 +19,10 @@ const Hero = () => {
         </span>
       </div>
       <div className="flex justify-center gap-8">
-        <Button variant="outline" className="text-black">
+        <Button variant="outline" className="text-black cursor-pointer">
           Create Group
         </Button>
-        <Button>Add an Expense</Button>
+        <Button className="cursor-pointer">Go to Dashboard</Button>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ const Navbar = ({ user }: { user: ClientUser | null }) => {
     <div>
       <nav className="sticky to-0 z-50 bg-gray-800 h-14 text-white flex items-center justify-between">
         <div
-          className=" flex lg:justify-center"
+          className=" flex lg:justify-center cursor-pointer"
           onClick={() => router.push("/")}
         >
           {/* <Image
@@ -29,7 +29,7 @@ const Navbar = ({ user }: { user: ClientUser | null }) => {
         </div>
         <div className="flex items-center mr-5 gap-5 justify-end">
           <div className="flex">
-            <Button variant="secondary" className=" h-8">
+            <Button variant="secondary" className="cursor-pointer h-8">
               Create Group
             </Button>
           </div>
