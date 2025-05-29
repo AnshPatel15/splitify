@@ -1,7 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const Hero = () => {
+  const router = useRouter();
+
   return (
     <div className="text-white">
       <div className="flex justify-center flex-col items-center p-15">
@@ -22,7 +27,12 @@ const Hero = () => {
         <Button variant="outline" className="text-black cursor-pointer">
           Create Group
         </Button>
-        <Button className="cursor-pointer">Go to Dashboard</Button>
+        <Button
+          className="cursor-pointer"
+          onClick={() => router.push("/dashboard")}
+        >
+          Go to Dashboard
+        </Button>
       </div>
     </div>
   );

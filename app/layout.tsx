@@ -10,6 +10,7 @@ import {
 } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,10 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-700`}
         >
-          <SignedIn>{children}</SignedIn>
+          <SignedIn>
+            <Navbar />
+            {children}
+          </SignedIn>
           <SignedOut>
             <SignIn />
           </SignedOut>

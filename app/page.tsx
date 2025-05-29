@@ -9,7 +9,7 @@ export default async function Home() {
 
   return (
     <div>
-      <Navbar user={safeUser} />
+      {/* <Navbar user={safeUser} /> */}
       <Hero />
     </div>
   );

@@ -8,7 +8,7 @@ type ClientUser = {
   firstName: string | null;
 };
 
-const Navbar = ({ user }: { user: ClientUser | null }) => {
+const Navbar = () => {
   const router = useRouter();
 
   return (
