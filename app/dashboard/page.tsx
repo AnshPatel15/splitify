@@ -47,6 +47,7 @@ const Dashboard = () => {
       <div className="flex-col flex gap-10 w-[90%] md:w-[500px] mt-10">
         {groups.map((group) => (
           <GroupCard
+            key={group.id}
             onClick={() => router.push(`/groups/${group.id}`)}
             group={group}
           />

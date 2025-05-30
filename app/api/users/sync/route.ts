@@ -25,6 +25,7 @@ export async function POST() {
           clerkId: user.id,
           email: user.primaryEmailAddress?.emailAddress ?? "",
           name: user.firstName || "",
+          phone: user.phoneNumbers?.[0]?.phoneNumber ?? null,
         },
       });
     }

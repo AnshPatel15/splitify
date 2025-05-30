@@ -11,6 +11,7 @@ declare global {
   };
 
   type User = {
+    user: any;
     id: string;
     clerkId: string;
     name: string;

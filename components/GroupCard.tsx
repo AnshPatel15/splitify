@@ -6,7 +6,6 @@ type GroupCardProps = {
 const GroupCard: React.FC<GroupCardProps> = ({ group, onClick }) => {
   return (
     <div
-      key={group.id}
       onClick={onClick}
       className="text-amber-50 bg-[#27548A] flex rounded-md p-3 flex-col shadow-2xl hover:shadow-xl cursor-pointer hover:translate-y-[-5px] transition-all duration-300 ease-out border-l-[3px] border-r-[3px] border-[#4895ff]"
     >
