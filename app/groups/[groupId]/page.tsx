@@ -17,9 +17,16 @@ const GroupPage = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
-  const generateInviteLink = (groupId: string) => {
-    return `${window.location.origin}/invite?groupId=${groupId}`;
-  };
+  const [Loading, setLoading] = useState(false);
+  const [memberEmail, setMemberEmail] = useState("");
+  const [inviteLink, setInviteLink] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (groupId && typeof window !== "undefined") {
+      setInviteLink(`${window.location.origin}/invite?groupId=${groupId}`);
+    }
+  }, [groupId]);
 
   useEffect(() => {
     const fetchGroupData = async () => {
@@ -40,7 +47,41 @@ const GroupPage = () => {
     }
   }, [groupId]);
 
-  const handleAddMember = () => {};
+  const handleAddMember = async () => {
+    setError(null);
+    if (!memberEmail || !groupId || memberEmail.trim() === "") {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch("/api/groups/add-member", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          groupId,
+          memberEmail,
+        }),
+      });
+      const data = await res.json();
+      console.log("Response data:", data);
+      if (res.ok) {
+        setMemberEmail("");
+        setShowAddMemberModal(false);
+      } else {
+        setError(data.error || "Error adding member.");
+        console.error("Error response:", data);
+      }
+    } catch (error) {
+      console.error("Error adding member:", error);
+    } finally {
+      setLoading(false);
+      setShowAddMemberModal(false);
+      setMemberEmail("");
+    }
+  };
 
   return (
     <div className="h-screen bg-white">
@@ -102,7 +143,11 @@ const GroupPage = () => {
       {/* Modal */}
       <Modal
         isOpen={showAddMemberModal}
-        onClose={() => setShowAddMemberModal(false)}
+        onClose={() => {
+          setShowAddMemberModal(false);
+          setMemberEmail("");
+          setError(null);
+        }}
         title="Add Member"
       >
         <div className="flex flex-col gap-4">
@@ -110,8 +155,17 @@ const GroupPage = () => {
             type="email"
             placeholder="Enter email address"
             className="border border-gray-300"
+            value={memberEmail}
+            onChange={(e) => setMemberEmail(e.target.value)}
           />
-          <Button variant="default">Send Invite</Button>
+          <Button
+            className="cursor-pointer"
+            onClick={handleAddMember}
+            variant="default"
+          >
+            {Loading ? "Sending..." : "Send Invite"}
+          </Button>
+          {error && <span className="text-red-500 text-sm">{error}</span>}
 
           <hr className="my-2" />
           <div className="text-sm">
@@ -120,14 +174,12 @@ const GroupPage = () => {
               <Input
                 readOnly
                 className="w-full p-2 text-sm"
-                value={groupId ? generateInviteLink(groupId as string) : ""}
+                value={inviteLink}
               />
               <Button
-                className="text-xs px-2"
+                className="text-xs px-2 cursor-pointer"
                 onClick={() => {
-                  navigator.clipboard.writeText(
-                    generateInviteLink(groupId as string)
-                  );
+                  navigator.clipboard.writeText(inviteLink);
                 }}
               >
                 Copy
