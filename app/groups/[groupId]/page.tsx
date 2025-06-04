@@ -108,6 +108,7 @@ const GroupPage = () => {
       <AddExpenseModal
         isOpen={showExpenseModal}
         onClose={() => setShowExpenseModal(false)}
+        members={group?.members || []}
       />
     </div>
   );
