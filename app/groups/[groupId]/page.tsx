@@ -7,8 +7,8 @@ import { RiMoneyRupeeCircleFill } from "react-icons/ri";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Modal from "@/components/Modal";
-import { Input } from "@/components/ui/input";
+import AddMemberModal from "@/components/modals/AddMemberModal";
+import AddExpenseModal from "@/components/modals/AddExpenseModal";
 
 const GroupPage = () => {
   const { groupId } = useParams();
@@ -16,17 +16,7 @@ const GroupPage = () => {
 
   const [showSettings, setShowSettings] = useState(false);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
-
-  const [Loading, setLoading] = useState(false);
-  const [memberEmail, setMemberEmail] = useState("");
-  const [inviteLink, setInviteLink] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (groupId && typeof window !== "undefined") {
-      setInviteLink(`${window.location.origin}/invite?groupId=${groupId}`);
-    }
-  }, [groupId]);
+  const [showExpenseModal, setShowExpenseModal] = useState(false);
 
   useEffect(() => {
     const fetchGroupData = async () => {
@@ -47,42 +37,6 @@ const GroupPage = () => {
     }
   }, [groupId]);
 
-  const handleAddMember = async () => {
-    setError(null);
-    if (!memberEmail || !groupId || memberEmail.trim() === "") {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const res = await fetch("/api/groups/add-member", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          groupId,
-          memberEmail,
-        }),
-      });
-      const data = await res.json();
-      console.log("Response data:", data);
-      if (res.ok) {
-        setMemberEmail("");
-        setShowAddMemberModal(false);
-      } else {
-        setError(data.error || "Error adding member.");
-        console.error("Error response:", data);
-      }
-    } catch (error) {
-      console.error("Error adding member:", error);
-    } finally {
-      setLoading(false);
-      setShowAddMemberModal(false);
-      setMemberEmail("");
-    }
-  };
-
   return (
     <div className="h-screen bg-white">
       <div className="bg-gray-700 text-amber-50 flex items-center justify-center h-36 relative rounded-b-xl shadow-2xl">
@@ -92,7 +46,11 @@ const GroupPage = () => {
           </h1>
           <p className=" text-md">{group?.description || ""}</p>
           <div className="flex gap-2 mt-4">
-            <Button className="h-7 cursor-pointer" variant="secondary">
+            <Button
+              onClick={() => setShowExpenseModal(true)}
+              className="h-7 cursor-pointer"
+              variant="secondary"
+            >
               <RiMoneyRupeeCircleFill />
               Add expense +
             </Button>
@@ -141,53 +99,16 @@ const GroupPage = () => {
         </div>
       )}
       {/* Modal */}
-      <Modal
-        isOpen={showAddMemberModal}
-        onClose={() => {
-          setShowAddMemberModal(false);
-          setMemberEmail("");
-          setError(null);
-        }}
-        title="Add Member"
-      >
-        <div className="flex flex-col gap-4">
-          <Input
-            type="email"
-            placeholder="Enter email address"
-            className="border border-gray-300"
-            value={memberEmail}
-            onChange={(e) => setMemberEmail(e.target.value)}
-          />
-          <Button
-            className="cursor-pointer"
-            onClick={handleAddMember}
-            variant="default"
-          >
-            {Loading ? "Sending..." : "Send Invite"}
-          </Button>
-          {error && <span className="text-red-500 text-sm">{error}</span>}
 
-          <hr className="my-2" />
-          <div className="text-sm">
-            <p className="mb-1">Or copy invite link</p>
-            <div className="flex gap-2">
-              <Input
-                readOnly
-                className="w-full p-2 text-sm"
-                value={inviteLink}
-              />
-              <Button
-                className="text-xs px-2 cursor-pointer"
-                onClick={() => {
-                  navigator.clipboard.writeText(inviteLink);
-                }}
-              >
-                Copy
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Modal>
+      <AddMemberModal
+        isOpen={showAddMemberModal}
+        onClose={() => setShowAddMemberModal(false)}
+        groupId={String(groupId)}
+      />
+      <AddExpenseModal
+        isOpen={showExpenseModal}
+        onClose={() => setShowExpenseModal(false)}
+      />
     </div>
   );
 };
