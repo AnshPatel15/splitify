@@ -66,3 +66,59 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+
+    const groupId = searchParams.get("groupId");
+    const createdById = searchParams.get("createdById");
+
+    if (!groupId && !createdById) {
+      return NextResponse.json(
+        { error: "groupId or createdById is required." },
+        { status: 400 }
+      );
+    }
+
+    const filter: any = {};
+
+    if (groupId) {
+      filter.groupId = groupId;
+    }
+    if (createdById) {
+      filter.createdById = createdById;
+    }
+
+    const expenses = await prisma.expense.findMany({
+      where: filter,
+      include: {
+        payments: true,
+        shares: true,
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        group: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        expenseDate: "desc",
+      },
+    });
+
+    return NextResponse.json({ success: true, expenses }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching expenses:", error);
+    return NextResponse.json(
+      { error: "An error occurred while fetching expenses." },
+      { status: 500 }
+    );
+  }
+}

@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="sticky to-0 z-50 bg-gray-800 h-14 text-white flex items-center justify-between rounded-md">
+      <nav className="sticky to-0 z-50 bg-gray-800 h-14 text-white flex items-center justify-between">
         <div
           className=" flex lg:justify-center cursor-pointer"
           onClick={() => router.push("/")}

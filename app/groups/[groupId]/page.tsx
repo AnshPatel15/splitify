@@ -1,9 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { IoPeopleSharp } from "react-icons/io5";
-import { RiMoneyRupeeCircleFill } from "react-icons/ri";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import AddMemberModal from "@/components/modals/AddMemberModal";
@@ -11,97 +7,10 @@ import AddExpenseModal, {
   ExpenseFormData,
 } from "@/components/modals/AddExpenseModal";
 import { useUser } from "@clerk/nextjs";
+import GroupHeader from "./GroupHeader";
+import GroupSettings from "./GroupSettings";
+import ExpenseSheet from "./ExpenseSheet";
 
-// Types
-interface GroupMember {
-  id: string;
-  user: {
-    id: string;
-    name: string | null;
-    email: string;
-    clerkId: string;
-  };
-}
-
-interface Group {
-  id: string;
-  name: string;
-  description: string | null;
-  members: GroupMember[];
-}
-
-// Components
-const GroupHeader = ({
-  group,
-  onAddExpense,
-  onAddMember,
-  onToggleSettings,
-  showSettings,
-}: {
-  group: Group | null;
-  onAddExpense: () => void;
-  onAddMember: () => void;
-  onToggleSettings: () => void;
-  showSettings: boolean;
-}) => (
-  <div className="bg-gray-700 text-amber-50 flex items-center justify-center h-36 relative rounded-b-xl shadow-2xl">
-    <div className="flex items-center flex-col gap-2">
-      <h1 className="text-xl capitalize">
-        {group?.name || "Loading group..."}
-      </h1>
-      <p className="text-md">{group?.description || ""}</p>
-      <div className="flex gap-2 mt-4">
-        <Button
-          onClick={onAddExpense}
-          className="h-7 cursor-pointer"
-          variant="secondary"
-        >
-          <RiMoneyRupeeCircleFill />
-          Add expense +
-        </Button>
-        <Button
-          onClick={onAddMember}
-          className="h-7 hover:bg-gray-200 hover:text-black cursor-pointer"
-          variant="default"
-        >
-          <IoPeopleSharp className="hover:text-black" />
-          Add member +
-        </Button>
-      </div>
-    </div>
-    <Image
-      onClick={onToggleSettings}
-      className={`cursor-pointer absolute top-4 left-4 ${
-        showSettings ? "rotate-180" : ""
-      } transition-all duration-300 ease-in-out`}
-      src="/settings.png"
-      alt="group-settings"
-      width={22}
-      height={22}
-    />
-  </div>
-);
-
-const GroupSettings = ({ group }: { group: Group | null }) => (
-  <div className="bg-gray-200 p-4 rounded-lg shadow-lg w-[90%] md:w-[500px] mx-auto mt-4">
-    <h2 className="text-lg font-semibold mb-2">Group Settings</h2>
-    <p className="text-sm text-gray-700">
-      Here you can manage your group settings.
-    </p>
-    <div className="mt-4">
-      <h2>Members: </h2>
-      <ul className="list-disc pl-5">
-        {group?.members?.map((member) => (
-          <li key={member.id} className="text-sm text-gray-700">
-            {member.user.name}
-          </li>
-        ))}
-      </ul>
-    </div>
-  </div>
-);
-
-// Services
 const groupService = {
   async fetchGroup(groupId: string): Promise<Group> {
     const res = await fetch(`/api/groups?groupId=${groupId}`);
@@ -171,7 +80,7 @@ const GroupPage = () => {
     })) || [];
 
   return (
-    <div className="h-screen bg-white">
+    <div className="h-full bg-white">
       <GroupHeader
         group={group}
         onAddExpense={() => setShowExpenseModal(true)}
@@ -196,6 +105,8 @@ const GroupPage = () => {
         groupId={String(groupId)}
         onAddExpense={handleAddExpense}
       />
+
+      <ExpenseSheet groupId={String(groupId)} />
     </div>
   );
 };
