@@ -263,7 +263,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
         receiptUrl: formData.receiptUrl,
       };
 
-      // await onAddExpense(expenseData);
+      onAddExpense(expenseData);
       console.log(expenseData);
       onClose();
     } catch (error) {
